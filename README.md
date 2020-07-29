@@ -1,34 +1,28 @@
-# Introduction
+# scRNA-seq QC operator
 
-This is a template repository.
+##### Description
+`scRNA-seq QC` performs quality-control on single-cell RNA-seq count data and returns the counts of the filtered cells and genes.
 
-Use this template repository during the first step of developing a tercen operator (in R) on github.
+##### Usage
 
-An overview of steps for developing an operator are:
+Input projection|.
+---|---
+`y-axis`        | numeric, count data, per cell 
+`x-axis`        | character, cell ID
+`row names`     | character, gene ID
 
-1. create a github repo
-2. install tercen_studio
-3. login to tercen_studio
-4. git clone the newly created repo
-5. start developing in R in tercen_studio
-6. add R packages to the repo
-7. push to the github repo
-8. go to tercen and install the operator
+Output relations|.
+---|---
+`y-axis`        | numeric, count data, per cell 
+`x-axis`        | character, cell ID
+`row names`     | character, gene ID
 
-For step 1, when creating the repo on github, you will notice the option to use a template repository, choose the `templateR_operator` repository and select it as the template repository.
+##### Details
+The operator uses the QC worklfow described in the corresponding chapter of the ["Orchestrating Single-Cell Analysis"](https://osca.bioconductor.org/quality-control.html) book. For this it uses the _scRNAseq_ BioConductor package.
 
-After creation, you now have a new repository with all the convenient files for making a new operator (in R) for tercen.
+#### References
+Amezquita, et. al. ["Orchestrating single-cell analysis with BioConductor"](https://www.nature.com/articles/s41592-019-0654-x), Nature Methods (2019)
 
-Use `tercen_studio` to clone the new repository and start programming in `tercen_studio`
+##### See Also
 
-it includes the skeleton files 
-
-* `main.R`
-* `workspace.R`
-* `operator.json`
-* `README_template.md`
-* `doc` directory
-
-please remember to change the `README_template.md` to  `README.template.md`
-
-inside the `doc` there is a `dev_commands.md` file which contains useful development command lines.
+#### Examples
