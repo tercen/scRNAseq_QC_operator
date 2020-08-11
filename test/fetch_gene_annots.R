@@ -13,4 +13,5 @@ annots <- select(edb, keys=keys, columns=c("GENEID", "GENENAME",
 write.table(annots,
             file = "test/gene_annots.tsv",
             sep = "\t",
-            quote = FALSE)
+            quote = FALSE,
+            row.names = FALSE)
