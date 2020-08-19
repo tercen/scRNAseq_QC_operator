@@ -1,12 +1,12 @@
-library(tercen)
-library(dplyr)
 library(scRNAseq)
 library(SingleCellExperiment)
-library(tidyr)
 library(scater)
+library(tidyr)
+library(dplyr)
+library(tercen)
 
 options("tercen.workflowId" = "7d6077b7fa4df6315a718714de00346e")
-options("tercen.stepId"     = "de995bb0-620a-4e70-85c5-c74a3fdbe37b")
+options("tercen.stepId"     = "ceff76f8-85b3-4738-a873-4d5fad13b345")
 
 getOption("tercen.workflowId")
 getOption("tercen.stepId")
@@ -29,15 +29,13 @@ high.mito <- isOutlier(stats$pct_counts_Mito, type="higher")
 qc.libsize <- isOutlier(stats$total_counts, log=TRUE, type="lower")
 qc.nexprs <- isOutlier(stats$total_features_by_counts, log=TRUE, type="lower")
 
-output <- tibble(ctx$cselect()[[1]],
-                 pct_counts_Mito = stats$pct_counts_Mito,
+output <- tibble(pct_counts_Mito = stats$pct_counts_Mito,
                  library_size = stats$total_counts,
                  n_feature_detected = stats$total_features_by_counts,
                  passes_QC = !(qc.libsize | qc.nexprs | high.mito))
-colnames(output)[[1]] <- ctx$cnames[[1]]
 output$.ci <- 0:(nrow(output)-1)
 
-row_indexes <- ctx %>% select(.ci)
+row_indexes <- ctx %>% select(.ri, .ci)
 output <- left_join(row_indexes, output)
 
 ctx$addNamespace(output) %>%
