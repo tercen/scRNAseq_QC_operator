@@ -6,7 +6,7 @@ library(dplyr)
 library(tercen)
 
 options("tercen.workflowId" = "7d6077b7fa4df6315a718714de00346e")
-options("tercen.stepId"     = "ceff76f8-85b3-4738-a873-4d5fad13b345")
+options("tercen.stepId"     = "e8df35d9-2f50-45e0-a192-671c49c34418")
 
 getOption("tercen.workflowId")
 getOption("tercen.stepId")
@@ -31,12 +31,18 @@ qc.nexprs <- isOutlier(stats$total_features_by_counts, log=TRUE, type="lower")
 
 output <- tibble(pct_counts_Mito = stats$pct_counts_Mito,
                  library_size = stats$total_counts,
-                 n_feature_detected = stats$total_features_by_counts,
-                 passes_QC = !(qc.libsize | qc.nexprs | high.mito))
-output$.ci <- 0:(nrow(output)-1)
+                 n_feature_detected = stats$total_features_by_counts)#,
+            #     passes_QC = !(qc.libsize | qc.nexprs | high.mito))
+output$.ci <- as.double(0:(nrow(output)-1))
 
-row_indexes <- ctx %>% select(.ri, .ci)
-output <- left_join(row_indexes, output)
+
+
+output$n_feature_detected <- as.double(output$n_feature_detected)
+
+output <- bind_cols(ctx %>% select(.ci, .ri) %>% dplyr::filter(.ri == 0) %>% select(.ci),
+                    output)
+
+#output$.ci <- as.double(output$.ci)
 
 ctx$addNamespace(output) %>%
   ctx$save()
