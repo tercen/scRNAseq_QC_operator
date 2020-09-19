@@ -26,7 +26,17 @@ qc.nexprs <- isOutlier(stats$total_features_by_counts, log=TRUE, type="lower")
 output <- tibble(pct_counts_Mito = stats$pct_counts_Mito,
                  library_size = stats$total_counts,
                  n_feature_detected = as.numeric(stats$total_features_by_counts))#,
-output$.ci <- as.double(0:(nrow(output)-1))
+#     passes_QC = !(qc.libsize | qc.nexprs | high.mito))
+output$.ci <- (0:(nrow(output)-1))
+
+#full_schema <- ctx %>% select(.ci, .ri) %>%
+#  left_join(output)
+
+#output <- bind_cols(ctx %>% select(.ci, .ri) %>% dplyr::filter(.ri == 0) %>% select(.ci),
+#                    output)
+
+#output$.ci <- as.double(output$.ci)
 
 ctx$addNamespace(output) %>%
   ctx$save()
+

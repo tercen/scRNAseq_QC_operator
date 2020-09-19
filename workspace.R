@@ -5,8 +5,8 @@ library(tidyr)
 library(dplyr)
 library(tercen)
 
-options("tercen.workflowId" = "7d6077b7fa4df6315a718714de00346e")
-options("tercen.stepId"     = "e8df35d9-2f50-45e0-a192-671c49c34418")
+options("tercen.workflowId" = "4be77e8b64b21d32888498101300ee68")
+options("tercen.stepId"     = "13752223-2f8a-4e02-839a-884d386bbb56")
 
 getOption("tercen.workflowId")
 getOption("tercen.stepId")
@@ -33,12 +33,15 @@ output <- tibble(pct_counts_Mito = stats$pct_counts_Mito,
                  library_size = stats$total_counts,
                  n_feature_detected = as.numeric(stats$total_features_by_counts))#,
             #     passes_QC = !(qc.libsize | qc.nexprs | high.mito))
-output$.ci <- as.double(0:(nrow(output)-1))
+output$.ci <- (0:(nrow(output)-1))
+
+full_schema <- ctx %>% select(.ci, .ri) %>%
+  left_join(output)
 
 #output <- bind_cols(ctx %>% select(.ci, .ri) %>% dplyr::filter(.ri == 0) %>% select(.ci),
 #                    output)
 
 #output$.ci <- as.double(output$.ci)
 
-ctx$addNamespace(output) %>%
+ctx$addNamespace(full_schema) %>%
   ctx$save()
