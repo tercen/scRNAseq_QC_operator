@@ -1,9 +1,9 @@
 {
-  "name": "Median",
-  "description": "Return the medium value of a cell",
-  "tags": ["basic statistics"],
+  "name": "scRNA-seq QC",
+  "description": "Return QC metrics for single-cell RNA-seq data",
+  "tags": ["genomics", "scRNA-seq", "QC"],
   "authors": ["tercen"],
-  "urls": ["https://github.com/tercen/template_operator"],
+  "urls": ["https://github.com/tercen/scRNAseq_QC_operator"],
   "properties": []
 }
 
