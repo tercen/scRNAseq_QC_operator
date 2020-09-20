@@ -25,8 +25,8 @@ qc.nexprs <- isOutlier(stats$total_features_by_counts, log=TRUE, type="lower")
 
 output <- tibble(pct_counts_Mito = stats$pct_counts_Mito,
                  library_size = stats$total_counts,
-                 n_feature_detected = as.numeric(stats$total_features_by_counts))#,
-#     passes_QC = !(qc.libsize | qc.nexprs | high.mito))
+                 n_feature_detected = as.numeric(stats$total_features_by_counts),
+     passes_QC = as.numeric(!(qc.libsize | qc.nexprs | high.mito)))
 output$.ci <- (0:(nrow(output)-1))
 
 #full_schema <- ctx %>% select(.ci, .ri) %>%
