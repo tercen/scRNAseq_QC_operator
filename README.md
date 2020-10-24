@@ -13,9 +13,10 @@ Input projection|.
 
 Output relations|.
 ---|---
-`y-axis`        | numeric, count data, per cell 
-`x-axis`        | character, cell ID
-`row names`     | character, gene ID
+`pct_counts_Mito`        | numeric, percent counts mapping to mitochondrial genes per cell
+`library_size`        | numeric, total counts per cell
+`n_feature_detected`     | numeric, number of features (genes) detected per cell
+`passes_QC`             | boolean, indicating whether each cell has passed QC
 
 ##### Details
 The operator uses the QC worklfow described in the corresponding chapter of the ["Orchestrating Single-Cell Analysis"](https://osca.bioconductor.org/quality-control.html) book. For this it uses the _scRNAseq_ BioConductor package.
