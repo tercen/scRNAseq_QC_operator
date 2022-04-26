@@ -1,11 +1,14 @@
-library(scRNAseq)
-library(SingleCellExperiment)
-library(scater)
-library(tidyr)
-library(dplyr)
-library(tercen)
+suppressPackageStartupMessages(expr = {
+  library(SingleCellExperiment)
+  library(scater)
+  library(tidyr)
+  library(dplyr)
+  library(tercen)
+})
 
-(ctx = tercenCtx())
+ctx = tercenCtx()
+
+if(length(ctx$rnames) < 2) stop("At least two row factors are required.")
 
 count_matrix <- ctx$as.matrix()
 
@@ -16,27 +19,25 @@ sce <- SingleCellExperiment(assays = list(counts = count_matrix))
 
 rowData(sce)$Chr <- ctx$rselect()[[1]]
 
-is.mito <- which(rowData(sce)$Chr == "MT")
-stats <- calculateQCMetrics(sce, feature_controls = list(Mito=is.mito))
-high.mito <- isOutlier(stats$pct_counts_Mito, type="higher")
+refseq <- ctx$op.value("refseq", as.character, "1")
 
-qc.libsize <- isOutlier(stats$total_counts, log=TRUE, type="lower")
-qc.nexprs <- isOutlier(stats$total_features_by_counts, log=TRUE, type="lower")
+is.mito <- which(rowData(sce)$Chr == refseq)
+stats <- perCellQCMetrics(sce, subsets = list(Mito = is.mito))
 
-output <- tibble(pct_counts_Mito = stats$pct_counts_Mito,
-                 library_size = stats$total_counts,
-                 n_feature_detected = as.numeric(stats$total_features_by_counts),
-     passes_QC = as.numeric(!(qc.libsize | qc.nexprs | high.mito)))
-output$.ci <- (0:(nrow(output)-1))
+high.mito <- isOutlier(stats$subsets_Mito_percent, type = "higher")
+qc.libsize <- isOutlier(stats$sum, log = TRUE, type = "lower")
+qc.nexprs <- isOutlier(stats$total, log = TRUE, type = "lower")
+flag <- as.numeric(!(qc.libsize | qc.nexprs | high.mito))
 
-#full_schema <- ctx %>% select(.ci, .ri) %>%
-#  left_join(output)
+df_out <- tibble(
+  pct_counts_Mito = stats$subsets_Mito_percent,
+  library_size = stats$sum,
+  n_feature_detected = as.numeric(stats$detected),
+  QC_flag = ifelse(flag, "pass", "fail")
+) %>%
+  mutate(.ci = 0:(nrow(.) - 1)) 
 
-#output <- bind_cols(ctx %>% select(.ci, .ri) %>% dplyr::filter(.ri == 0) %>% select(.ci),
-#                    output)
-
-#output$.ci <- as.double(output$.ci)
-
-ctx$addNamespace(output) %>%
+df_out %>%
+  ctx$addNamespace() %>%
   ctx$save()
 
