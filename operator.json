@@ -7,9 +7,9 @@
   "properties": [
   {
     "kind": "StringProperty",
-    "name": "refseq",
-    "defaultValue": "MT",
-    "description": "Name of the sequence used as control"
+    "name": "pattern",
+    "defaultValue": "^MT-",
+    "description": "Regex pattern to find mitochondrial genes. See Seurat documentation."
   }
   ]
 }

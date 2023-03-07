@@ -1,0 +1,25 @@
+{
+  "kind": "OperatorUnitTest",
+  "name": "test_1",
+  "namespace": "ds0",
+  "inputDataUri": "test_1_in.csv",
+  "outputDataUri": ["test_1_out_1.csv", "test_1_out_2.csv", "test_1_out_3.csv"],
+  "columns": [
+    "ds1100.cell_id"
+  ],
+  "rows": ["ds1100.gene_names"],
+  "colors": [],
+  "labels": [],
+  "yAxis": "y_values",
+  "xAxis": "",
+  "generatedOn": "03/07/2023 10:52:33 AM 2023",
+  "version": "",
+  "propertyValues": [
+    {
+      "kind": "PropertyValue",
+      "name": "pattern",
+      "value": "^OR*"
+    }
+  ],
+  "relTol": 1e-05
+}

@@ -1,43 +1,19 @@
 suppressPackageStartupMessages(expr = {
-  library(SingleCellExperiment)
-  library(scater)
+  library(Seurat)
   library(tidyr)
   library(dplyr)
   library(tercen)
 })
 
+source("./utils.R")
 ctx = tercenCtx()
 
-if(length(ctx$rnames) < 2) stop("At least two row factors are required.")
+obj <- as_Seurat(ctx, dim_names = "rownames")
+pattern <- ctx$op.value("pattern", as.character, "^OR*")
+obj[["percent_mt"]] <- PercentageFeatureSet(obj, pattern = pattern)
 
-count_matrix <- ctx$as.matrix()
-
-rownames(count_matrix) <- ctx$rselect()[[2]]
-colnames(count_matrix) <- ctx$cselect()[[1]]
-
-sce <- SingleCellExperiment(assays = list(counts = count_matrix))
-
-rowData(sce)$Chr <- ctx$rselect()[[1]]
-
-refseq <- ctx$op.value("refseq", as.character, "1")
-
-is.mito <- which(rowData(sce)$Chr == refseq)
-stats <- perCellQCMetrics(sce, subsets = list(Mito = is.mito))
-
-high.mito <- isOutlier(stats$subsets_Mito_percent, type = "higher")
-qc.libsize <- isOutlier(stats$sum, log = TRUE, type = "lower")
-qc.nexprs <- isOutlier(stats$total, log = TRUE, type = "lower")
-flag <- as.numeric(!(qc.libsize | qc.nexprs | high.mito))
-
-df_out <- tibble(
-  pct_counts_Mito = stats$subsets_Mito_percent,
-  library_size = stats$sum,
-  n_feature_detected = as.numeric(stats$detected),
-  QC_flag = ifelse(flag, "pass", "fail")
-) %>%
-  mutate(.ci = 0:(nrow(.) - 1)) 
-
-df_out %>%
+obj[[]] %>%
+  select(-orig.ident) %>%
+  mutate(.ci = seq_len(nrow(.)) - 1L) %>%
   ctx$addNamespace() %>%
   ctx$save()
-
