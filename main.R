@@ -13,7 +13,9 @@ pattern <- ctx$op.value("pattern", as.character, "^OR*")
 obj[["percent_mt"]] <- PercentageFeatureSet(obj, pattern = pattern)
 
 obj[[]] %>%
+  as_tibble() %>%
   select(-orig.ident) %>%
+  mutate_if(is.integer, as.double) %>%
   mutate(.ci = seq_len(nrow(.)) - 1L) %>%
   ctx$addNamespace() %>%
   ctx$save()
