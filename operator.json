@@ -1,6 +1,6 @@
 {
-  "name": "scRNA-seq QC",
-  "description": "Return QC metrics for single-cell RNA-seq data",
+  "name": "scRNAseq QC",
+  "description": "Computes QC metrics for single-cell RNA sequencing data.",
   "tags": [
     "omics",
     "sc-RNA-seq",
